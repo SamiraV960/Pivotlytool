@@ -14,9 +14,95 @@ function App() {
   const [brainDump, setBrainDump] = useState<string>('');
   const [targetRole, setTargetRole] = useState<string>('');
   const [aiResult, setAiResult] = useState<object | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const goTo = (screen: string) => {
     setCurrentScreen(screen as Screen);
+  };
+
+  const analyzeWithAI = async () => {
+    goTo('loading');
+
+    const systemPrompt = `You are Pivotly — an AI career re-entry assistant that helps women translate life experience into professional leverage.
+
+Always respond with valid JSON only. No prose, no markdown, nothing outside the JSON.
+
+{
+  "professional_reframe": "string (2-3 sentences, confident, no apologising for the gap)",
+  "skills_found": [
+    {
+      "skill": "string",
+      "evidence": "string (from what they told you only)",
+      "category": "leadership | communication | organisation | technical | interpersonal | resilience"
+    }
+  ],
+  "best_fit_roles": [
+    {
+      "title": "string",
+      "reason": "string (one sentence, UK market)"
+    }
+  ],
+  "gaps": [
+    {
+      "gap": "string",
+      "action": "string (free or low-cost UK step)",
+      "priority": "high | medium | low"
+    }
+  ],
+  "next_step": {
+    "title": "string (max 8 words)",
+    "description": "string (max 2 sentences)"
+  },
+  "confidence": "high | medium | low",
+  "confidence_note": "string (one sentence)"
+}
+
+Hard rules:
+- Only surface skills the user has evidenced.
+- Max 5 skills_found, 3 best_fit_roles, 3 gaps.
+- Never fabricate URLs or qualifications.
+- Never suggest the user apologise for their break.
+- UK job market only.
+- If too vague: {"error":"needs_more_info","prompt":"friendly follow-up question"}`;
+
+    const userMessage = `Pivot reason: ${pivotReason || 'not specified'}
+
+${brainDump}
+
+Target role: ${targetRole || 'not specified'}`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': import.meta.env.VITE_ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMessage }],
+        }),
+      });
+
+      const data = await response.json();
+      const raw = data.content[0].text;
+      const clean = raw.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(clean);
+
+      if (parsed.error === 'needs_more_info') {
+        setErrorMessage(parsed.prompt);
+        goTo('brainDump');
+      } else {
+        setAiResult(parsed);
+        goTo('results');
+      }
+    } catch (e) {
+      setErrorMessage('Something went wrong. Please try again.');
+      goTo('brainDump');
+    }
   };
 
   const renderScreen = () => {
@@ -39,6 +125,9 @@ function App() {
             setBrainDump={setBrainDump}
             targetRole={targetRole}
             setTargetRole={setTargetRole}
+            analyzeWithAI={analyzeWithAI}
+            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
           />
         );
       case 'loading':

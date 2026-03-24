@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 
 interface Screen3BrainDumpProps {
   goTo: (screen: string) => void;
@@ -6,6 +6,9 @@ interface Screen3BrainDumpProps {
   setBrainDump: (text: string) => void;
   targetRole: string;
   setTargetRole: (role: string) => void;
+  analyzeWithAI: () => void;
+  errorMessage: string | null;
+  setErrorMessage: (message: string | null) => void;
 }
 
 export default function Screen3BrainDump({
@@ -14,6 +17,9 @@ export default function Screen3BrainDump({
   setBrainDump,
   targetRole,
   setTargetRole,
+  analyzeWithAI,
+  errorMessage,
+  setErrorMessage,
 }: Screen3BrainDumpProps) {
   const MIN_CHARS = 50;
   const charCount = brainDump.length;
@@ -21,7 +27,7 @@ export default function Screen3BrainDump({
 
   const handleAnalyze = () => {
     if (isValid) {
-      goTo('loading');
+      analyzeWithAI();
     }
   };
 
@@ -64,6 +70,21 @@ export default function Screen3BrainDump({
           Your last role, how long you've been away, anything you've done during your break. No CV
           needed — just talk to me.
         </p>
+
+        {/* Error message banner */}
+        {errorMessage && (
+          <div
+            className="rounded-xl p-4 mb-6 flex items-start gap-3"
+            style={{ backgroundColor: '#FEF3F0', border: '1px solid var(--orange)' }}
+          >
+            <p className="flex-1 text-sm" style={{ color: 'var(--text)' }}>
+              {errorMessage}
+            </p>
+            <button onClick={() => setErrorMessage(null)} className="flex-shrink-0">
+              <X size={18} style={{ color: 'var(--orange)' }} />
+            </button>
+          </div>
+        )}
 
         {/* Brain dump textarea */}
         <textarea
