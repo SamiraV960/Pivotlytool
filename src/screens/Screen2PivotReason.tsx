@@ -1,13 +1,12 @@
-import { useState } from 'react';
-
 interface Screen2PivotReasonProps {
   goTo: (screen: string) => void;
+  pivotReason: string | null;
+  setPivotReason: (reason: string | null) => void;
 }
 
 type PivotReasonType = 'motherhood' | 'caregiving' | 'health' | 'relocation' | null;
 
-export default function Screen2PivotReason({ goTo }: Screen2PivotReasonProps) {
-  const [pivotReason, setPivotReason] = useState<PivotReasonType>(null);
+export default function Screen2PivotReason({ goTo, pivotReason, setPivotReason }: Screen2PivotReasonProps) {
 
   const reasons = [
     {

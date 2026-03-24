@@ -10,6 +10,10 @@ type Screen = 'landing' | 'pivotReason' | 'brainDump' | 'loading' | 'results' | 
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
+  const [pivotReason, setPivotReason] = useState<string | null>(null);
+  const [brainDump, setBrainDump] = useState<string>('');
+  const [targetRole, setTargetRole] = useState<string>('');
+  const [aiResult, setAiResult] = useState<object | null>(null);
 
   const goTo = (screen: string) => {
     setCurrentScreen(screen as Screen);
@@ -20,9 +24,23 @@ function App() {
       case 'landing':
         return <Screen1Landing goTo={goTo} />;
       case 'pivotReason':
-        return <Screen2PivotReason goTo={goTo} />;
+        return (
+          <Screen2PivotReason
+            goTo={goTo}
+            pivotReason={pivotReason}
+            setPivotReason={setPivotReason}
+          />
+        );
       case 'brainDump':
-        return <Screen3BrainDump goTo={goTo} />;
+        return (
+          <Screen3BrainDump
+            goTo={goTo}
+            brainDump={brainDump}
+            setBrainDump={setBrainDump}
+            targetRole={targetRole}
+            setTargetRole={setTargetRole}
+          />
+        );
       case 'loading':
         return <Screen4Loading goTo={goTo} />;
       case 'results':
