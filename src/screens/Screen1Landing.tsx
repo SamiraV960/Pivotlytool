@@ -14,6 +14,11 @@ export default function Screen1Landing({ goTo }: Screen1LandingProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 md:px-6">
       <div className="w-full max-w-[680px] flex flex-col items-center gap-6">
+        <img
+          src="/re-entry_logo.jpg"
+          alt="re-entry"
+          className="h-[36px] md:h-[44px] w-auto mb-4"
+        />
         <h1 className="text-[48px] md:text-[56px] leading-tight text-center" style={{ color: 'var(--text)' }}>
           Your career break isn't a hole. It's a pivot.
         </h1>

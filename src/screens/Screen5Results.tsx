@@ -87,6 +87,11 @@ export default function Screen5Results({ goTo, aiResult, resetApp }: Screen5Resu
   return (
     <div className="min-h-screen flex flex-col items-center px-4 md:px-6 py-12">
       <div className="w-full max-w-[880px] flex flex-col gap-5 pb-12">
+        <img
+          src="/re-entry_logo.jpg"
+          alt="re-entry"
+          className="h-[36px] md:h-[44px] w-auto mb-2"
+        />
         {/* CARD 1: Professional Reframe */}
         <div
           className="rounded-xl p-6 md:p-8"
