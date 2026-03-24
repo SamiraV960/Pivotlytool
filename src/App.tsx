@@ -12,6 +12,7 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
   const [pivotReason, setPivotReason] = useState<string | null>(null);
   const [brainDump, setBrainDump] = useState<string>('');
+  const [linkedinUrl, setLinkedinUrl] = useState<string>('');
   const [targetRole, setTargetRole] = useState<string>('');
   const [aiResult, setAiResult] = useState<object | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -23,6 +24,7 @@ function App() {
   const resetApp = () => {
     setPivotReason(null);
     setBrainDump('');
+    setLinkedinUrl('');
     setTargetRole('');
     setAiResult(null);
     setErrorMessage(null);
@@ -131,6 +133,8 @@ Target role: ${targetRole || 'not specified'}`;
             goTo={goTo}
             brainDump={brainDump}
             setBrainDump={setBrainDump}
+            linkedinUrl={linkedinUrl}
+            setLinkedinUrl={setLinkedinUrl}
             targetRole={targetRole}
             setTargetRole={setTargetRole}
             analyzeWithAI={analyzeWithAI}

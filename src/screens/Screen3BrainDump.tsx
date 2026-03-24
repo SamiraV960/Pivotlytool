@@ -1,9 +1,12 @@
 import { ArrowLeft, X } from 'lucide-react';
+import { useState } from 'react';
 
 interface Screen3BrainDumpProps {
   goTo: (screen: string) => void;
   brainDump: string;
   setBrainDump: (text: string) => void;
+  linkedinUrl: string;
+  setLinkedinUrl: (url: string) => void;
   targetRole: string;
   setTargetRole: (role: string) => void;
   analyzeWithAI: () => void;
@@ -15,6 +18,8 @@ export default function Screen3BrainDump({
   goTo,
   brainDump,
   setBrainDump,
+  linkedinUrl,
+  setLinkedinUrl,
   targetRole,
   setTargetRole,
   analyzeWithAI,
@@ -24,11 +29,21 @@ export default function Screen3BrainDump({
   const MIN_CHARS = 50;
   const charCount = brainDump.length;
   const isValid = charCount >= MIN_CHARS;
+  const [linkedinError, setLinkedinError] = useState(false);
 
   const handleAnalyze = () => {
     if (isValid) {
       analyzeWithAI();
     }
+  };
+
+  const validateLinkedInUrl = (url: string) => {
+    if (!url) {
+      setLinkedinError(false);
+      return;
+    }
+    const isValid = url.includes('linkedin.com/in/') || url.startsWith('https://www.linkedin.com/in/');
+    setLinkedinError(!isValid);
   };
 
   return (
@@ -105,6 +120,45 @@ export default function Screen3BrainDump({
           style={{ color: isValid ? 'var(--orange)' : 'var(--muted)' }}
         >
           {charCount} / {MIN_CHARS} minimum
+        </div>
+
+        {/* LinkedIn URL input */}
+        <div className="mb-6">
+          <label
+            className="block text-[14px] mb-1.5"
+            style={{ color: 'var(--text)', fontFamily: 'DM Sans, sans-serif' }}
+            htmlFor="linkedinUrl"
+          >
+            Your LinkedIn profile URL (optional)
+          </label>
+          <p
+            className="text-[12px] mb-2"
+            style={{ color: 'var(--muted)', fontFamily: 'DM Sans, sans-serif' }}
+          >
+            Adding this helps us give you a richer skills analysis
+          </p>
+          <input
+            id="linkedinUrl"
+            type="url"
+            value={linkedinUrl}
+            onChange={(e) => setLinkedinUrl(e.target.value)}
+            onBlur={(e) => validateLinkedInUrl(e.target.value)}
+            placeholder="https://www.linkedin.com/in/yourname"
+            className="w-full rounded-xl p-4 text-base focus:outline-none focus:ring-2 focus:ring-offset-2"
+            style={{
+              border: '1px solid var(--border)',
+              color: 'var(--text)',
+              fontFamily: 'DM Sans, sans-serif',
+            }}
+          />
+          {linkedinError && (
+            <p
+              className="text-[12px] mt-1.5"
+              style={{ color: 'var(--orange)', fontFamily: 'DM Sans, sans-serif' }}
+            >
+              Please enter a LinkedIn profile URL
+            </p>
+          )}
         </div>
 
         {/* Target role input */}
