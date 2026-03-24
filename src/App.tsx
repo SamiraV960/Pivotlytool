@@ -20,6 +20,14 @@ function App() {
     setCurrentScreen(screen as Screen);
   };
 
+  const resetApp = () => {
+    setPivotReason(null);
+    setBrainDump('');
+    setTargetRole('');
+    setAiResult(null);
+    setErrorMessage(null);
+  };
+
   const analyzeWithAI = async () => {
     goTo('loading');
 
@@ -133,7 +141,7 @@ Target role: ${targetRole || 'not specified'}`;
       case 'loading':
         return <Screen4Loading goTo={goTo} />;
       case 'results':
-        return <Screen5Results goTo={goTo} />;
+        return <Screen5Results goTo={goTo} aiResult={aiResult} resetApp={resetApp} />;
       case 'error':
         return <Screen6Error goTo={goTo} />;
       default:
